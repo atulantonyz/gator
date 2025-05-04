@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"path/filepath"
 )
 
 type Config struct {
 	Db_url            string `json:"db_url"`
 	Current_user_name string `json:"current_user_name"`
 }
+
+const configFileName = ".gatorconfig.json"
 
 func Read() (Config, error) {
 	config_path, err := getConfigFilePath()
@@ -19,18 +22,14 @@ func Read() (Config, error) {
 		fmt.Println("Error opening config file")
 		return Config{}, err
 	}
-	var config Config
-	data, err := io.ReadAll(content)
+	defer content.Close()
+	decoder := json.NewDecoder(content)
+	cfg := Config{}
+	err = decoder.Decode(&cfg)
 	if err != nil {
-		fmt.Println("Error reading config file")
 		return Config{}, err
 	}
-	if err = json.Unmarshal(data, &config); err != nil {
-		fmt.Println("Error in Unmarshal")
-		return Config{}, err
-	}
-	return config, nil
-
+	return cfg, nil
 }
 
 func (c Config) SetUser(user string) error {
@@ -48,7 +47,7 @@ func getConfigFilePath() (string, error) {
 	if err != nil {
 		return "home directory not found", err
 	}
-	config_filepath := home_dir + "/" + configFileName
+	config_filepath := filepath.Join(home_dir, configFileName)
 	return config_filepath, nil
 }
 
@@ -66,5 +65,3 @@ func write(cfg Config) error {
 	return nil
 
 }
-
-const configFileName = ".gatorconfig.json"
