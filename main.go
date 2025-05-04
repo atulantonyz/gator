@@ -3,18 +3,20 @@ package main
 import (
 	"fmt"
 	"github.com/atulantonyz/gator/internal/config"
+	"log"
 )
 
 func main() {
 	cfg, err := config.Read()
 	if err != nil {
-		fmt.Println("Error in reading config")
+		log.Fatalf("Error reading config: %v", err)
 	}
+	fmt.Printf("Read config: %v\n", cfg)
 	cfg.SetUser("Atul")
-	cfg2, err := config.Read()
+	cfg, err = config.Read()
 	if err != nil {
-		fmt.Println("Error in reading config")
+		log.Fatalf("Error reading config: %v", err)
 	}
-	fmt.Println(cfg2)
+	fmt.Printf("Read config again: %v\n", cfg)
 
 }
