@@ -3,7 +3,6 @@ package config
 import (
 	"encoding/json"
 	"fmt"
-	"io"
 	"os"
 	"path/filepath"
 )
@@ -32,13 +31,9 @@ func Read() (Config, error) {
 	return cfg, nil
 }
 
-func (c Config) SetUser(user string) error {
-	c.Current_user_name = user
-	err := write(c)
-	if err != nil {
-		return err
-	}
-	return nil
+func (cfg *Config) SetUser(userName string) error {
+	cfg.Current_user_name = userName
+	return write(*cfg)
 
 }
 
@@ -53,15 +48,21 @@ func getConfigFilePath() (string, error) {
 
 func write(cfg Config) error {
 	config_path, err := getConfigFilePath()
-	data, err := json.Marshal(cfg)
 	if err != nil {
 		return err
 	}
 	//Write data to config file
-	err = os.WriteFile(config_path, data, os.ModePerm)
+	file, err := os.Create(config_path)
 	if err != nil {
 		return err
 	}
+	defer file.Close()
+	encoder := json.NewEncoder(file)
+	err = encoder.Encode(cfg)
+	if err != nil {
+		return err
+	}
+
 	return nil
 
 }
