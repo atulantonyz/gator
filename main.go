@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"github.com/atulantonyz/gator/internal/config"
 	"log"
 	"os"
@@ -9,15 +8,6 @@ import (
 
 type state struct {
 	cfg *config.Config
-}
-
-func handlerLogin(s *state, cmd command) error {
-	if len(cmd.args) == 0 {
-		return fmt.Errorf("Username is required")
-	}
-	s.cfg.SetUser(cmd.args[0])
-	fmt.Println("User has been set to " + cmd.args[0])
-	return nil
 }
 
 func main() {
