@@ -23,13 +23,13 @@ func main() {
 	app_commands.register("login", handlerLogin)
 	cmd_line_args := os.Args
 	if len(cmd_line_args) < 2 {
-		log.Fatalf("Too few arguments")
+		log.Fatalf("Usage: cli <command> [args...]")
 	}
-	cmd1 := command{
-		cmd_line_args[1],
-		cmd_line_args[2:],
-	}
-	err = app_commands.run(&app_state, cmd1)
+
+	cmdName := cmd_line_args[1]
+	cmdArgs := cmd_line_args[2:]
+
+	err = app_commands.run(&app_state, command{name: cmdName, args: cmdArgs})
 	if err != nil {
 		log.Fatalf("Error running command: %v", err)
 	}
