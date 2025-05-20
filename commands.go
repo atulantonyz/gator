@@ -5,8 +5,8 @@ import (
 )
 
 type command struct {
-	name string
-	args []string
+	Name string
+	Args []string
 }
 
 type commands struct {
@@ -14,7 +14,7 @@ type commands struct {
 }
 
 func (c *commands) run(s *state, cmd command) error {
-	handler, ok := c.cmd_list[cmd.name]
+	handler, ok := c.cmd_list[cmd.Name]
 	if !ok {
 		return fmt.Errorf("Command does not exist")
 	}

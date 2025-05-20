@@ -29,7 +29,7 @@ func main() {
 	cmdName := cmd_line_args[1]
 	cmdArgs := cmd_line_args[2:]
 
-	err = app_commands.run(&app_state, command{name: cmdName, args: cmdArgs})
+	err = app_commands.run(&app_state, command{Name: cmdName, Args: cmdArgs})
 	if err != nil {
 		log.Fatalf("Error running command: %v", err)
 	}
