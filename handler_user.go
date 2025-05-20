@@ -6,7 +6,7 @@ import (
 
 func handlerLogin(s *state, cmd command) error {
 	if len(cmd.args) != 1 {
-		fmt.Errorf("usage: %s <name>", cmd.name)
+		return fmt.Errorf("usage: %s <name>", cmd.name)
 	}
 
 	name := cmd.args[0]
