@@ -56,7 +56,7 @@ func handlerRegister(s *state, cmd command) error {
 }
 
 func handlerReset(s *state, cmd command) error {
-	err := s.db.ResetUsers(context.Background())
+	err := s.db.DeleteUsers(context.Background())
 	if err != nil {
 		fmt.Println("Unable to reset users table")
 		os.Exit(1)
