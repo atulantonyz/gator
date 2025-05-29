@@ -30,6 +30,7 @@ func main() {
 	}
 	app_commands.register("login", handlerLogin)
 	app_commands.register("register", handlerRegister)
+	app_commands.register("reset", handlerReset)
 	cmd_line_args := os.Args
 	if len(cmd_line_args) < 2 {
 		log.Fatalf("Usage: cli <command> [args...]")
