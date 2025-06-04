@@ -33,6 +33,7 @@ func main() {
 	app_commands.register("reset", handlerReset)
 	app_commands.register("users", handlerUsers)
 	app_commands.register("agg", handlerAgg)
+	app_commands.register("addfeed", handlerAddFeed)
 	cmd_line_args := os.Args
 	if len(cmd_line_args) < 2 {
 		log.Fatalf("Usage: cli <command> [args...]")
