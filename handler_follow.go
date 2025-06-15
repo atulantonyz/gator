@@ -48,7 +48,7 @@ func handlerFollowing(s *state, cmd command) error {
 		fmt.Println("Failed in getting current user!")
 		return err
 	}
-	feedFollows, err := s.db.GetFeedFollowsForUser(context.Background(), user.Name)
+	feedFollows, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
 		fmt.Println("Failed to get followed feeds for user")
 		return err
