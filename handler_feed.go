@@ -17,6 +17,9 @@ func handlerAddFeed(s *state, cmd command) error {
 	name := cmd.Args[0]
 	url := cmd.Args[1]
 	user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
+	if err != nil {
+		return err
+	}
 	feedParams := database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
@@ -34,4 +37,17 @@ func handlerAddFeed(s *state, cmd command) error {
 		feed.Name, feed.Url, feed.UserID)
 	return nil
 
+}
+
+func handlerFeeds(s *state, cmd command) error {
+	feedsRows, err := s.db.GetFeeds(context.Background())
+	if err != nil {
+		fmt.Println("Unable to retrieve feeds")
+		os.Exit(1)
+	}
+	for _, feed := range feedsRows {
+		fmt.Printf("name: %s\nurl: %s\nuser: %s\n", feed.Name, feed.Url, feed.Name_2)
+	}
+
+	return nil
 }
