@@ -2,6 +2,7 @@ package main
 
 import _ "github.com/lib/pq"
 import (
+	"context"
 	"database/sql"
 	"github.com/atulantonyz/gator/internal/config"
 	"github.com/atulantonyz/gator/internal/database"
@@ -50,4 +51,15 @@ func main() {
 		log.Fatalf("Error running command: %v", err)
 	}
 
+}
+
+func middlewareLoggedIn(handler func(s *state, cmd command, user database.User) error) func(*state, command) error {
+
+	return func(s *state, cmd command) error {
+		user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
+		if err != nil {
+			return err
+		}
+		return handler(s, cmd, user)
+	}
 }
