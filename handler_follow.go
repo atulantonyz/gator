@@ -9,16 +9,12 @@ import (
 	"time"
 )
 
-func handlerFollow(s *state, cmd command) error {
+func handlerFollow(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 1 {
 		fmt.Printf("usage: %s <url>\n", cmd.Name)
 		os.Exit(1)
 	}
 	url := cmd.Args[0]
-	user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
-	if err != nil {
-		return err
-	}
 	feed, err := s.db.GetFeed(context.Background(), url)
 	if err != nil {
 		return err
@@ -42,12 +38,7 @@ func handlerFollow(s *state, cmd command) error {
 
 }
 
-func handlerFollowing(s *state, cmd command) error {
-	user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
-	if err != nil {
-		fmt.Println("Failed in getting current user!")
-		return err
-	}
+func handlerFollowing(s *state, cmd command, user database.User) error {
 	feedFollows, err := s.db.GetFeedFollowsForUser(context.Background(), user.ID)
 	if err != nil {
 		fmt.Println("Failed to get followed feeds for user")

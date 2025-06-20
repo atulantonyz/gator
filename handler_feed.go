@@ -9,17 +9,13 @@ import (
 	"time"
 )
 
-func handlerAddFeed(s *state, cmd command) error {
+func handlerAddFeed(s *state, cmd command, user database.User) error {
 	if len(cmd.Args) != 2 {
 		fmt.Printf("usage: %s <name> <url>\n", cmd.Name)
 		os.Exit(1)
 	}
 	name := cmd.Args[0]
 	url := cmd.Args[1]
-	user, err := s.db.GetUser(context.Background(), s.cfg.Current_user_name)
-	if err != nil {
-		return err
-	}
 	feedParams := database.CreateFeedParams{
 		ID:        uuid.New(),
 		CreatedAt: time.Now(),
