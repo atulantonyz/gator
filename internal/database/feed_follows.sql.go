@@ -75,7 +75,7 @@ func (q *Queries) CreateFeedFollow(ctx context.Context, arg CreateFeedFollowPara
 const deleteFeedFollowForUser = `-- name: DeleteFeedFollowForUser :exec
 DELETE FROM feed_follows 
 USING feeds
-WHERE feed_follows.user_id = $1 AND feeds.url = $2
+WHERE feed_follows.feed_id = feeds.id AND feed_follows.user_id = $1 AND feeds.url = $2
 `
 
 type DeleteFeedFollowForUserParams struct {
