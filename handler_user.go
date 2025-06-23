@@ -6,6 +6,7 @@ import (
 	"github.com/atulantonyz/gator/internal/database"
 	"github.com/google/uuid"
 	"os"
+	"strconv"
 	"time"
 )
 
@@ -68,5 +69,33 @@ func handlerUsers(s *state, cmd command) error {
 		}
 		fmt.Printf("\n")
 	}
+	return nil
+}
+
+func handlerBrowse(s *state, cmd command, user database.User) error {
+	if len(cmd.Args) > 1 {
+		return fmt.Errorf("usage: %s <name> (limit)", cmd.Name)
+	}
+	limit := "2"
+
+	if len(cmd.Args) == 1 {
+		limit = cmd.Args[0]
+	}
+	limit_int, err := strconv.ParseInt(limit, 10, 32)
+	if err != nil {
+		return err
+	}
+	posts, err := s.db.GetPostsForUser(
+		context.Background(), database.GetPostsForUserParams{
+			UserID: user.ID,
+			Limit:  int32(limit_int),
+		},
+	)
+	for _, post := range posts {
+		fmt.Printf("\n* %s : %s\n", post.Title, post.Url)
+		fmt.Printf("- published: %s\n", post.PublishedAt.Format("2006-01-02 15:04:05"))
+		fmt.Printf("\n %s\n", post.Description.String)
+	}
+
 	return nil
 }

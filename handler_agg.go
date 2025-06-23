@@ -2,7 +2,11 @@ package main
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
+	"github.com/atulantonyz/gator/internal/database"
+	"github.com/google/uuid"
+	"github.com/lib/pq"
 	"os"
 	"time"
 )
@@ -36,8 +40,43 @@ func scrapeFeeds(s *state) error {
 		return fmt.Errorf("could not mark fetched feed: %w", err)
 	}
 	rssfeed, err := fetchFeed(context.Background(), feed.Url)
+	if err != nil {
+		return fmt.Errorf("failed to fetch feed: %w", err)
+	}
+
 	for _, item := range rssfeed.Channel.Item {
-		fmt.Printf("%s\n", item.Title)
+
+		layout := "Mon, 02 Jan 2006 15:04:05 -0700"
+		parsedTime, err := time.Parse(layout, item.PubDate)
+		if err != nil {
+			fmt.Printf("Error parsing time %s: %v", item.PubDate, err)
+			os.Exit(1)
+			return fmt.Errorf("Error parsing date: %w", err)
+		}
+
+		postParams := database.CreatePostParams{
+			ID:          uuid.New(),
+			CreatedAt:   time.Now(),
+			UpdatedAt:   time.Now(),
+			Title:       item.Title,
+			Url:         item.Link,
+			Description: sql.NullString{String: item.Description, Valid: len(item.Description) > 0},
+			PublishedAt: parsedTime,
+			FeedID:      feed.ID,
+		}
+		_, err = s.db.CreatePost(context.Background(), postParams)
+		if err != nil {
+			// Check if it's a unique violation
+			if pqErr, ok := err.(*pq.Error); ok {
+				if pqErr.Code == "23505" { // Unique violation
+					continue
+				}
+			}
+			fmt.Println("Some other error:", err)
+			os.Exit(1)
+			return fmt.Errorf("failed to create post: %w", err)
+		}
+
 	}
 	return nil
 }
