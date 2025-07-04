@@ -93,7 +93,7 @@ func handlerBrowse(s *state, cmd command, user database.User) error {
 	)
 	for _, post := range posts {
 		fmt.Printf("\n* %s : %s\n", post.Title, post.Url)
-		fmt.Printf("- published: %s\n", post.PublishedAt.Format("2006-01-02 15:04:05"))
+		fmt.Printf("- published: %s\n", post.PublishedAt.Time.Format("2006-01-02 15:04:05"))
 		fmt.Printf("\n %s\n", post.Description.String)
 	}
 

@@ -46,12 +46,12 @@ func scrapeFeeds(s *state) error {
 
 	for _, item := range rssfeed.Channel.Item {
 
-		layout := "Mon, 02 Jan 2006 15:04:05 -0700"
-		parsedTime, err := time.Parse(layout, item.PubDate)
-		if err != nil {
-			fmt.Printf("Error parsing time %s: %v", item.PubDate, err)
-			os.Exit(1)
-			return fmt.Errorf("Error parsing date: %w", err)
+		publishedAt := sql.NullTime{}
+		if t, err := time.Parse(time.RFC1123Z, item.PubDate); err == nil {
+			publishedAt = sql.NullTime{
+				Time:  t,
+				Valid: true,
+			}
 		}
 
 		postParams := database.CreatePostParams{
@@ -61,7 +61,7 @@ func scrapeFeeds(s *state) error {
 			Title:       item.Title,
 			Url:         item.Link,
 			Description: sql.NullString{String: item.Description, Valid: len(item.Description) > 0},
-			PublishedAt: parsedTime,
+			PublishedAt: publishedAt,
 			FeedID:      feed.ID,
 		}
 		_, err = s.db.CreatePost(context.Background(), postParams)
