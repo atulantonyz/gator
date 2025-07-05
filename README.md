@@ -11,7 +11,7 @@
 
 * Multi-user support
 * Add, follow, and unfollow RSS feeds
-* Automatic background aggregation
+* Automatic feed aggregation
 * Lightweight and easy to use
 
 ---
