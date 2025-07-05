@@ -28,7 +28,7 @@
 1. Clone this repository:
 
    ```bash
-   git clone https://github.com/yourusername/gator.git
+   git clone https://github.com/atulantonyz/gator.git
    cd gator
    ```
 
